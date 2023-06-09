@@ -16,8 +16,8 @@ Na pasta raiz do projeto
 mvn package
 
 # Exec Monitor (Deve ser na ens5)
-java -jar monitor/target/monitor-1.0-SNAPSHOT.jar < servidor.in
+mvn exec:java -pl monitor -Dexec.mainClass="com.wsudesc.otavio.Monitor" < servidor.in
 
 # Exec Client
-java -jar client/target/client-y.jar
+mvn exec:java -pl client -Dexec.mainClass="com.wsudesc.otavio.Client"
 ```
