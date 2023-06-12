@@ -1,6 +1,7 @@
 ## Configuração
 
 Adicionar chaves das contas do Dropbox na raiz do projeto
+
 Os arquivos devem ser:
 
 - dbU1Token.properties

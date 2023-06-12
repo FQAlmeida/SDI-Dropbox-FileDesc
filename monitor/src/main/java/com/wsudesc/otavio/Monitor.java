@@ -173,20 +173,45 @@ public class Monitor {
                 // - 2 logs de split
                 String logClient;
                 logClient = inFromClient.readUTF();
-                logList.add(logClient);
+                tCount = logList.size() + 1;
+                logList.add(
+                    String.format(
+                        Locale.getDefault(),
+                        "T%03d;%s",
+                        tCount,
+                        logClient));
+
                 logger.info(logClient);
                 logClient = inFromClient.readUTF();
-                logList.add(logClient);
+                tCount = logList.size() + 1;
+                logList.add(
+                    String.format(
+                        Locale.getDefault(),
+                        "T%03d;%s",
+                        tCount,
+                        logClient));
                 logger.info(logClient);
 
                 // Wait for complete
 
                 // || - 2 logs de upload
                 logClient = inFromClient.readUTF();
-                logList.add(logClient);
+                tCount = logList.size() + 1;
+                logList.add(
+                    String.format(
+                        Locale.getDefault(),
+                        "T%03d;%s",
+                        tCount,
+                        logClient));
                 logger.info(logClient);
                 logClient = inFromClient.readUTF();
-                logList.add(logClient);
+                tCount = logList.size() + 1;
+                logList.add(
+                    String.format(
+                        Locale.getDefault(),
+                        "T%03d;%s",
+                        tCount,
+                        logClient));
                 logger.info(logClient);
 
                 // Add Download Job
@@ -214,29 +239,47 @@ public class Monitor {
                 // - 2 logs de download
                 String logClient;
                 logClient = inFromClient.readUTF();
-                logList.add(logClient);
+                long tCount = logList.size() + 1;
+                logList.add(
+                    String.format(
+                        Locale.getDefault(),
+                        "T%03d;%s",
+                        tCount,
+                        logClient));
                 logger.info(logClient);
                 logClient = inFromClient.readUTF();
-                logList.add(logClient);
+                tCount = logList.size() + 1;
+                logList.add(
+                    String.format(
+                        Locale.getDefault(),
+                        "T%03d;%s",
+                        tCount,
+                        logClient));
                 logger.info(logClient);
                 // || - 1 log de concat/merge
                 logClient = inFromClient.readUTF();
-                logList.add(logClient);
+                tCount = logList.size() + 1;
+                logList.add(
+                    String.format(
+                        Locale.getDefault(),
+                        "T%03d;%s",
+                        tCount,
+                        logClient));
                 logger.info(logClient);
 
                 // TODO: Receber bytes do arquivo
-                // OutputStream fileOutputStream = Files.newOutputStream(job.getFilepath());
-                // byte[] buffer = new byte[16 * 1024];
-                // int count;
-                // while ((count = inFromClient.read(buffer)) > 0) {
-                //   Byte[] decryptedBuffer = IntStream.range(0, buffer.length)
-                //       .mapToObj(i -> (byte) buffer[i])
-                //       .map((byte_value -> ((byte) ((byte_value.intValue() - 3) % Byte.MAX_VALUE))))
-                //       .toArray(Byte[]::new);
-                //   fileOutputStream.write(
-                //       toPrimitives(decryptedBuffer),
-                //       0, count);
-                // }
+                OutputStream fileOutputStream = Files.newOutputStream(job.getFilepath());
+                byte[] buffer = new byte[16 * 1024];
+                int count;
+                while ((count = inFromClient.read(buffer)) > 0) {
+                  Byte[] decryptedBuffer = IntStream.range(0, buffer.length)
+                      .mapToObj(i -> (byte) buffer[i])
+                      .map((byte_value -> ((byte) ((byte_value.intValue() - 3) % Byte.MAX_VALUE))))
+                      .toArray(Byte[]::new);
+                  fileOutputStream.write(
+                      toPrimitives(decryptedBuffer),
+                      0, count);
+                }
 
                 outToClient.writeUTF("completed");
                 logger.info("completed");
