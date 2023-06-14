@@ -110,6 +110,8 @@ gradle-app.setting
 dbU1Token.properties
 dbU2Token.properties
 dbU3Token.properties
+tempfiles/**/*
+!tempfiles/**/.gitkeep
 tempfiles/arqbla1.map.p01
 tempfiles/arqbla1.map.p02
 tempfiles/file10k.map.p01
@@ -118,3 +120,7 @@ tempfiles/download/arqbla1.map.p01
 tempfiles/download/arqbla1.map.p02
 tempfiles/download/file10k.map.p01
 tempfiles/download/file10k.map.p02
+output/**/*
+!output/**/.gitkeep
+_auditor_
+auditor.tgz

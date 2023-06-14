@@ -4,7 +4,11 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -14,7 +18,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.nio.file.Files;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.dropbox.core.DbxDownloader;
 import com.dropbox.core.DbxException;
@@ -272,6 +278,7 @@ public class Client {
                     logger.info("Found client with Track2: " + foundTrack2);
 
                     // Download tracks to tempfiles
+                    List<String> tracksToSend = new ArrayList<String>();
                     for (Map.Entry<AbstractMap.SimpleEntry<String, String>, DropboxConfig> entry : tracksClient
                             .entrySet()) {
                         DbxClientV2 client = entry.getValue().DropboxClient();
@@ -291,6 +298,7 @@ public class Client {
 
                         logger.info(
                                 "Downloaded Track Client: " + entry.getValue().getId() + " " + entry.getKey().getKey());
+                        tracksToSend.add("./tempfiles/download/" + entry.getKey().getKey());
                     }
 
                     // Concat files
@@ -302,7 +310,21 @@ public class Client {
                             jobFileName));
 
                     // send TamanhoArquivo to Mon
-                    // TODO: SendBytes to Mon
+                    for (String trackToSend : tracksToSend) {
+                        Path path = Paths.get(trackToSend);
+                        outToServer.writeLong(Files.size(path));
+                    }
+                    for (String trackToSend : tracksToSend) {
+                        Path path = Paths.get(trackToSend);
+                        InputStream fileInputStream = Files.newInputStream(path);
+                        byte[] buffer = new byte[16 * 1024];
+                        int count;
+                        while ((count = fileInputStream.read(buffer)) > 0) {
+
+                            outToServer.write(buffer, 0, count);
+                        }
+                        logger.info("File sent");
+                    }
 
                     String jobCompleted = inFromServer.readUTF();
                     logger.info(jobCompleted);

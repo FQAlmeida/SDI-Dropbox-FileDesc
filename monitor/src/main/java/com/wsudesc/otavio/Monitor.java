@@ -267,11 +267,19 @@ public class Monitor {
                         logClient));
                 logger.info(logClient);
 
-                // TODO: Receber bytes do arquivo
-                OutputStream fileOutputStream = Files.newOutputStream(job.getFilepath());
+                
+                long sizeTrack1 = inFromClient.readLong();
+                long sizeTrack2 = inFromClient.readLong();
+                Path path = Paths.get("output/" + job.getFilepath().getFileName());
+                OutputStream fileOutputStream = Files.newOutputStream(path);
                 byte[] buffer = new byte[16 * 1024];
-                int count;
-                while ((count = inFromClient.read(buffer)) > 0) {
+                int count = 0;
+                long bytesTrack1 = 0;
+                long bytesTrack2 = 0;
+                do {
+                  int bytesSize = (int) Math.min(buffer.length, sizeTrack1 - bytesTrack1);
+                  count = inFromClient.read(buffer, 0, bytesSize);
+
                   Byte[] decryptedBuffer = IntStream.range(0, buffer.length)
                       .mapToObj(i -> (byte) buffer[i])
                       .map((byte_value -> ((byte) ((byte_value.intValue() - 3) % Byte.MAX_VALUE))))
@@ -279,7 +287,28 @@ public class Monitor {
                   fileOutputStream.write(
                       toPrimitives(decryptedBuffer),
                       0, count);
-                }
+                  bytesTrack1 += count;
+                  if (bytesTrack1 >= sizeTrack1) {
+                    break;
+                  }
+                } while (count > 0);
+
+                do {
+                  int bytesSize = (int) Math.min(buffer.length, sizeTrack2 - bytesTrack2);
+                  count = inFromClient.read(buffer, 0, bytesSize);
+
+                  Byte[] decryptedBuffer = IntStream.range(0, buffer.length)
+                      .mapToObj(i -> (byte) buffer[i])
+                      .map((byte_value -> ((byte) ((byte_value.intValue() - 3) % Byte.MAX_VALUE))))
+                      .toArray(Byte[]::new);
+                  fileOutputStream.write(
+                      toPrimitives(decryptedBuffer),
+                      0, count);
+                  bytesTrack2 += count;
+                  if (bytesTrack2 >= sizeTrack2) {
+                    break;
+                  }
+                } while (count > 0);
 
                 outToClient.writeUTF("completed");
                 logger.info("completed");
