@@ -15,7 +15,6 @@ import java.util.Scanner;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,7 +25,6 @@ public class Monitor {
   }
 
   private static Logger logger = Logger.getLogger(Monitor.class.getName());
-  // Lista síncrona de logs {
   private static List<String> logList = Collections.synchronizedList(new ArrayList<>());
 
   private static LinkedBlockingQueue<Job> jobsQueue = new LinkedBlockingQueue<>();
@@ -90,13 +88,13 @@ public class Monitor {
     System.out.println("****** End DESCMon ******");
   }
 
-  static private byte[] toPrimitives(Byte[] oBytes) {
-    byte[] bytes = new byte[oBytes.length];
-    for (int i = 0; i < oBytes.length; i++) {
-      bytes[i] = oBytes[i];
-    }
-    return bytes;
-  }
+  // static private byte[] toPrimitives(Byte[] oBytes) {
+  //   byte[] bytes = new byte[oBytes.length];
+  //   for (int i = 0; i < oBytes.length; i++) {
+  //     bytes[i] = oBytes[i];
+  //   }
+  //   return bytes;
+  // }
 
   public static void main(String[] args) {
     try {
@@ -160,12 +158,7 @@ public class Monitor {
                 byte[] buffer = new byte[16 * 1024];
                 int count;
                 while ((count = fileInputStream.read(buffer)) > 0) {
-                  Byte[] cryptedBuffer = IntStream.range(0, buffer.length)
-                      .mapToObj(i -> (byte) buffer[i])
-                      .map((byte_value -> ((byte) ((byte_value.intValue() + 3) % Byte.MAX_VALUE))))
-                      .toArray(Byte[]::new);
-
-                  outToClient.write(toPrimitives(cryptedBuffer), 0, count);
+                  outToClient.write(buffer, 0, count);
                 }
                 logger.info("File sent");
 
@@ -267,7 +260,6 @@ public class Monitor {
                         logClient));
                 logger.info(logClient);
 
-                
                 long sizeTrack1 = inFromClient.readLong();
                 long sizeTrack2 = inFromClient.readLong();
                 Path path = Paths.get("output/" + job.getFilepath().getFileName());
@@ -280,12 +272,8 @@ public class Monitor {
                   int bytesSize = (int) Math.min(buffer.length, sizeTrack1 - bytesTrack1);
                   count = inFromClient.read(buffer, 0, bytesSize);
 
-                  Byte[] decryptedBuffer = IntStream.range(0, buffer.length)
-                      .mapToObj(i -> (byte) buffer[i])
-                      .map((byte_value -> ((byte) ((byte_value.intValue() - 3) % Byte.MAX_VALUE))))
-                      .toArray(Byte[]::new);
                   fileOutputStream.write(
-                      toPrimitives(decryptedBuffer),
+                      buffer,
                       0, count);
                   bytesTrack1 += count;
                   if (bytesTrack1 >= sizeTrack1) {
@@ -297,12 +285,8 @@ public class Monitor {
                   int bytesSize = (int) Math.min(buffer.length, sizeTrack2 - bytesTrack2);
                   count = inFromClient.read(buffer, 0, bytesSize);
 
-                  Byte[] decryptedBuffer = IntStream.range(0, buffer.length)
-                      .mapToObj(i -> (byte) buffer[i])
-                      .map((byte_value -> ((byte) ((byte_value.intValue() - 3) % Byte.MAX_VALUE))))
-                      .toArray(Byte[]::new);
                   fileOutputStream.write(
-                      toPrimitives(decryptedBuffer),
+                      buffer,
                       0, count);
                   bytesTrack2 += count;
                   if (bytesTrack2 >= sizeTrack2) {

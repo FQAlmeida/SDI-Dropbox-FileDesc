@@ -3,7 +3,7 @@
 ########################## ****** ############################
 make clean > /dev/null
 make > /dev/null
-echo 'make done'
+# echo 'make done'
 ########################## ****** ############################
 
 ########################## ****** ############################
@@ -36,7 +36,7 @@ echo $dbDIR >> servidor.in
 
 ########################## ****** ############################
 # Lançando o servidor na máquina local (Ens5)
-java DESCMon < servidor.in > Logtrans.log&
+mvn exec:java -q -pl monitor -Dexec.mainClass="com.wsudesc.otavio.Monitor" < servidor.in > Logtrans.log&
 ########################## ****** ############################
 
 ########################## ****** ############################
@@ -46,17 +46,20 @@ do
     sleep 1
     pos=`expr $i + 1`;
     nom_maquinas=`echo $Hosts | cut -d " " -f $pos`
-    px=`echo $Clients | cut -d " " -f $pos`
-    cp db* FileDESC > /dev/null
-    ssh $nom_maquinas "cd `pwd`/FileDESC ; java -cp  target/FileDESC-1.0-SNAPSHOT.jar:com/dropbox/core/dropbox-core-sdk/4.0.1/dropbox-core-sdk-4.0.1.jar:com/fasterxml/jackson/core/jackson-core/2.7.4/jackson-core-2.7.4.jar com.wsudesc.app.DESCCli `pwd` ;  cd -"
+    # px=`echo $Clients | cut -d " " -f $pos`
+    # cp db* FileDESC > /dev/null
+    ssh $nom_maquinas "cd `pwd`; mvn exec:java -q -pl client -Dexec.mainClass="com.wsudesc.otavio.Client""
 done
 ########################## ****** ############################
+
+sleep 10
 
 cat Logtrans.log
 
 tar xvzf auditor.tgz > /dev/null 2>&1
-cd _auditor_ > /dev/null 2>&1
+cd _my_auditor_ > /dev/null 2>&1
+make clean > /dev/null 2>&1
 make > /dev/null 2>&1
 mkdir auditor/tmp
 
-cd auditor ; java -cp  target/auditor-1.0-SNAPSHOT.jar:com/dropbox/core/dropbox-core-sdk/4.0.1/dropbox-core-sdk-4.0.1.jar:com/fasterxml/jackson/core/jackson-core/2.7.4/jackson-core-2.7.4.jar com.wsudesc.app.Auditor `pwd` < ../../Logtrans.log; cd - 2>&1
+cd auditor ; java -cp  target/auditor-1.0-SNAPSHOT.jar:com/dropbox/core/dropbox-core-sdk/4.0.1/dropbox-core-sdk-4.0.1.jar:com/fasterxml/jackson/core/jackson-core/2.7.4/jackson-core-2.7.4.jar com.wsudesc.app.Auditor /nishome/u43781685888/atividades.OLD/java_maven_tests/db-project-test-2/_my_auditor_/ < ../../Logtrans.log; cd - 2>&1

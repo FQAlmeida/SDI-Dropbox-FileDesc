@@ -18,9 +18,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.nio.file.Files;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import com.dropbox.core.DbxDownloader;
 import com.dropbox.core.DbxException;
@@ -115,8 +113,10 @@ public class Client {
 
                     // Gen tracks name
                     // T003;DIVIDO;arqbla1.p02;tempfiles;
-                    String trackName1 = String.format(Locale.getDefault(), "%s.p01", jobfileName);
-                    String trackName2 = String.format(Locale.getDefault(), "%s.p02", jobfileName);
+                    String trackName1 = String.format(Locale.getDefault(), "%s.p01",
+                            jobfileName.substring(0, jobfileName.lastIndexOf('.')));
+                    String trackName2 = String.format(Locale.getDefault(), "%s.p02",
+                            jobfileName.substring(0, jobfileName.lastIndexOf('.')));
 
                     // Get Tamanho Arquivo
                     long jobFileSize = inFromServer.readLong();
@@ -160,11 +160,11 @@ public class Client {
                     // send split logs to Mon
                     outToServer.writeUTF(String.format(
                             Locale.getDefault(),
-                            "DIVIDIDO;%s;tempfiles;",
+                            "DIVIDO;%s;tempfiles;",
                             trackName1));
                     outToServer.writeUTF(String.format(
                             Locale.getDefault(),
-                            "DIVIDIDO;%s;tempfiles;",
+                            "DIVIDO;%s;tempfiles;",
                             trackName2));
 
                     // Choose accounts to upload to
@@ -220,8 +220,10 @@ public class Client {
                     logger.info(jobFileName);
 
                     // Gen tracks name
-                    String trackName1 = String.format(Locale.getDefault(), "%s.p01", jobFileName);
-                    String trackName2 = String.format(Locale.getDefault(), "%s.p02", jobFileName);
+                    String trackName1 = String.format(Locale.getDefault(), "%s.p01",
+                            jobFileName.substring(0, jobFileName.lastIndexOf('.')));
+                    String trackName2 = String.format(Locale.getDefault(), "%s.p02",
+                            jobFileName.substring(0, jobFileName.lastIndexOf('.')));
 
                     // Search clients for tracks
                     Map<AbstractMap.SimpleEntry<String, String>, DropboxConfig> tracksClient = new HashMap<AbstractMap.SimpleEntry<String, String>, DropboxConfig>();

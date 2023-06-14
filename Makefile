@@ -81,11 +81,11 @@ allOK:
 	@wget --no-check-certificate http://200.19.106.132:443/boca/www/inputfile.tgz > /dev/null 2>&1
 	@wget --no-check-certificate http://200.19.106.132:443/boca/www/tempfiles.tgz > /dev/null 2>&1
 	@tar xf auditor.tgz > /dev/null 2>&1
-	@cd input > /dev/null 2>&1; tar xzf ../inputfile.tgz > /dev/null 2>&1; cd -
+	# @cd input > /dev/null 2>&1; tar xzf ../inputfile.tgz > /dev/null 2>&1; cd -
 	@ rm -f inputfile.tgz
-	@cd tempfiles > /dev/null 2>&1; tar xzf ../tempfiles.tgz	> /dev/null 2>&1; cd -
+	# @cd tempfiles > /dev/null 2>&1; tar xzf ../tempfiles.tgz	> /dev/null 2>&1; cd -
 	@rm -f tempfiles.tgz
-	@cp input/arqbla1.map output/.
+	# @cp input/arqbla1.map output/.
 	@echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 	@echo "%%%%                     SDIDB: Para testar HelloJar, execute no terminal:	"
 	@echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
@@ -103,9 +103,8 @@ cleanall:
 clean:
 	rm -rf $(TMPFILE)
 	rm -rf $(NAME)
-	rm -rf output/
-	rm -rf tempfiles/
-	rm -rf input/
+	rm -rf output/**/*.map
+	rm -rf tempfiles/**/*.map*
 	rm -rf _auditor_
 	rm -f auditor.*
 	rm -f tempfiles.*

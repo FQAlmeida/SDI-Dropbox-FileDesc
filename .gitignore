@@ -123,4 +123,5 @@ tempfiles/download/file10k.map.p02
 output/**/*
 !output/**/.gitkeep
 _auditor_
+_my_auditor_
 auditor.tgz
