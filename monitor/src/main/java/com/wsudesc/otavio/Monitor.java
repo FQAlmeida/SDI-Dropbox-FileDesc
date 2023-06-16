@@ -89,17 +89,23 @@ public class Monitor {
   }
 
   // static private byte[] toPrimitives(Byte[] oBytes) {
-  //   byte[] bytes = new byte[oBytes.length];
-  //   for (int i = 0; i < oBytes.length; i++) {
-  //     bytes[i] = oBytes[i];
-  //   }
-  //   return bytes;
+  // byte[] bytes = new byte[oBytes.length];
+  // for (int i = 0; i < oBytes.length; i++) {
+  // bytes[i] = oBytes[i];
+  // }
+  // return bytes;
   // }
 
   public static void main(String[] args) {
     try {
-      // System.out.println("Configurando servidor ...");
-      logger.setLevel(Level.ALL);
+      String cmdLineVal = System.getenv("loglevel");
+      if (cmdLineVal != null) {
+        logger.setLevel(Level.parse(cmdLineVal));
+      } else {
+        logger.setLevel(Level.INFO);
+      }
+      logger.info("LogLevel: " + cmdLineVal);
+
       setServer();
       // Instancia o objeto servidor e a sua stub
       ServerSocket welcomeSocket = new ServerSocket(4355);

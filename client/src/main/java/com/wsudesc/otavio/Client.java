@@ -84,7 +84,13 @@ public class Client {
     }
 
     public static void main(String args[]) {
-        logger.setLevel(Level.ALL);
+        String cmdLineVal = System.getenv("loglevel");
+        if (cmdLineVal != null) {
+            logger.setLevel(Level.parse(cmdLineVal));
+        } else {
+            logger.setLevel(Level.INFO);
+        }
+        logger.info("LogLevel: " + cmdLineVal);
 
         setClient();
 
@@ -312,6 +318,7 @@ public class Client {
                             jobFileName));
 
                     // send TamanhoArquivo to Mon
+                    tracksToSend.sort(Comparator.naturalOrder());
                     for (String trackToSend : tracksToSend) {
                         Path path = Paths.get(trackToSend);
                         outToServer.writeLong(Files.size(path));
@@ -322,7 +329,6 @@ public class Client {
                         byte[] buffer = new byte[16 * 1024];
                         int count;
                         while ((count = fileInputStream.read(buffer)) > 0) {
-
                             outToServer.write(buffer, 0, count);
                         }
                         logger.info("File sent");

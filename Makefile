@@ -30,8 +30,10 @@ CLASSES = \
 
 classes: $(CLASSES:.java=.class)
 
-makepkg:
+makepkg: FORCE
 	$(MVN) package
+
+FORCE: ;
 
 newproject:
 	@echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
@@ -76,12 +78,13 @@ makepackage:
 allOK:
 	@mkdir -p output
 	@mkdir -p tempfiles
+	@mkdir -p tempfiles/download
 	@mkdir -p input
 	@wget --no-check-certificate http://200.19.106.132:443/boca/www/auditor.tgz > /dev/null 2>&1
 	@wget --no-check-certificate http://200.19.106.132:443/boca/www/inputfile.tgz > /dev/null 2>&1
 	@wget --no-check-certificate http://200.19.106.132:443/boca/www/tempfiles.tgz > /dev/null 2>&1
 	@tar xf auditor.tgz > /dev/null 2>&1
-	# @cd input > /dev/null 2>&1; tar xzf ../inputfile.tgz > /dev/null 2>&1; cd -
+	@cd input > /dev/null 2>&1; tar xzf ../inputfile.tgz > /dev/null 2>&1; cd -
 	@ rm -f inputfile.tgz
 	# @cd tempfiles > /dev/null 2>&1; tar xzf ../tempfiles.tgz	> /dev/null 2>&1; cd -
 	@rm -f tempfiles.tgz
@@ -111,3 +114,5 @@ clean:
 	rm -f inputfile.*
 	rm -f Logtrans.log
 	rm -f *.class
+	mvn clean
+
