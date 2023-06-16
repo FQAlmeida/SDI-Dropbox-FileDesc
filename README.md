@@ -1,3 +1,16 @@
+# FILEDesc
+
+Trabalho desenvolvido para a disciplina de SDI - 23/01.
+
+Alunos:
+- Gilson Sohn
+- Otávio Almeida
+
+Orientador:
+- Maurício A. Pillon
+
+Universidade de Estado de Santa Catarina.
+
 ## Configuração
 
 Adicionar chaves das contas do Dropbox na raiz do projeto
